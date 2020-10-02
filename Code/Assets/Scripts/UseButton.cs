@@ -12,7 +12,11 @@ public class UseButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+     if(SceneManager.GetActiveScene().buildIndex==2)
+        {
+        Cursor.lockState = CursorLockMode.None;
+        buttonText.text = GameManager.managerInstance.GetEndingText();
+        }
     }
 
     // Update is called once per frame
@@ -24,5 +28,16 @@ public class UseButton : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadScene(1);
+        GameManager.managerInstance.SetEndingText("Game over\nClick to restart");
+    }
+
+    public void ToTitle()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void EndGame()
+    {
+        Application.Quit();
     }
 }

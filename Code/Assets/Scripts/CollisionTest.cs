@@ -16,10 +16,12 @@ public class CollisionTest : MonoBehaviour
         
     }
 
+    /*
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("Collided with something");
 
         Debug.Log(collision.gameObject.name);
     }
+    */
 }

@@ -5,38 +5,37 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    float moveSpeed = 5;
+    float moveSpeed;
     [SerializeField]
-    float jumpSpeed = 10;
+    float jumpSpeed;
     [SerializeField]
-    int jumpTimes = 1;
-    [SerializeField]
-    float floatiness = 1f;
+    int jumpTimes = 1;  
+
+    int jump = 0;
+
+    float colDist;
+
+    Vector3 hSpeed;
+    Vector3 vSpeed;
 
     [SerializeField]
-    int jump = 1;
+    Camera currentCam;
 
-    [SerializeField]
-    float gravity = 10;
+    Transform camRotation;
 
-    float colDist = 0.75f;
-
-    int ammo = 50;
-    int health = 100;
-
-    Transform changePos;
-
-
-    
+    Rigidbody rBody;
     // Start is called before the first frame update
     void Start()
     {
-        changePos = GetComponent<Transform>();  
+        rBody = GetComponent<Rigidbody>();
+        camRotation = currentCam.GetComponent<Transform>();
+        colDist = transform.localScale.y;
     }
 
     // Update is called once per frame
     void Update()
     {
+
         Ray r = new Ray(transform.position, Vector3.down * colDist);
 
         Debug.DrawLine(r.origin, r.origin + (Vector3.down * colDist) );
@@ -46,43 +45,38 @@ public class PlayerMovement : MonoBehaviour
         float hAxis = Input.GetAxis("Horizontal");
         float vAxis = Input.GetAxis("Vertical");
 
-        changePos.position = new Vector3(changePos.position.x+(hAxis*moveSpeed*Time.deltaTime), changePos.position.y, changePos.position.z+(vAxis*moveSpeed*Time.deltaTime) );
-        //rBody.velocity = new Vector3(hAx  is * moveSpeed, rBody.velocity.y, vAxis * moveSpeed);
+        hSpeed = rBody.transform.right * (float)(hAxis * moveSpeed / 150f);
+        vSpeed = rBody.transform.forward * (float)(vAxis * moveSpeed / 150f * -1 );
 
-        if(Input.GetButtonDown("Jump") && jump<jumpTimes)
-        { 
+        transform.rotation = new Quaternion(camRotation.rotation.x, 0, camRotation.rotation.z, 0);
+
+        transform.position = new Vector3(transform.position.x,transform.position.y,transform.position.z)
+        + hSpeed + vSpeed;
+        
+        //rBody.MovePosition(new Vector3(rBody.position.x + hSpeed, rBody.position.y, rBody.position.z + vSpeed));
+
+
+        if (Input.GetButtonDown("Jump") && jump<jumpTimes)
+        {
             jump += 1;
+            Jump();
+            
         }
-
 
 
         if (Physics.Raycast(r, out hit, colDist))
         {
 
-            if (hit.transform.GetComponent<GroundInfo>() != null && gravity>0)
+            if (hit.transform.GetComponent<GroundInfo>() != null && rBody.velocity.y<0)
             {
-                Debug.Log("Test");
                 jump = 0;
-                gravity = 0;
-                //changePos.position = new Vector3(changePos.position.x, changePos.position.y, changePos.position.z);
-
-
 
             }
-
-
-        }
-
-        if (jump >= jumpTimes)
-        {
-            Jump();
         }
     }
-
-void Jump()
+    
+    void Jump()
     {
-        changePos.position = new Vector3(changePos.position.x, changePos.position.y + ((jumpSpeed - gravity) * Time.deltaTime), changePos.position.z);
-        gravity += floatiness;
+        rBody.velocity = new Vector3(rBody.velocity.x, jumpSpeed, rBody.velocity.z);
     }
-
 }

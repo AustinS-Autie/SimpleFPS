@@ -21,7 +21,7 @@ public class RestartRoom : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
-        if (!activated)
+        if (collision.gameObject.GetComponent<PlayerMovement>()!=null && !activated)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             activated = true;

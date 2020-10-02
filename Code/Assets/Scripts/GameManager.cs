@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public static GameManager managerInstance;
     public int score;
     public int coinsRemaining;
+    public int targetsRemaining;
+    public string endingText;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +27,7 @@ public class GameManager : MonoBehaviour
     void OnCreate()
     {
         coinsRemaining = 0;
+        targetsRemaining = 0;
         score = 0;
 
     }
@@ -59,4 +62,34 @@ public class GameManager : MonoBehaviour
     {
         coinsRemaining += amount;
     }
+
+    public void ReduceTargetCount(int val)
+    {
+        targetsRemaining -= val;
+
+        if (targetsRemaining <= 0)
+        {
+            endingText = "Congratulations, you win!\nClick to restart";
+            targetsRemaining = 3;
+            SceneManager.LoadScene(2);
+            
+        }
+    }
+
+    public int GetTargetsRemaining()
+    {
+        return targetsRemaining;
+    }
+
+    public string GetEndingText()
+    {
+        return endingText;
+    }
+
+    public void SetEndingText(string str)
+    {
+        endingText = str;
+    }
+
+
 }
